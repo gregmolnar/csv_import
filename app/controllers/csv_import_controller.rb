@@ -9,7 +9,7 @@ class CsvImportController < ::ApplicationController
         end
         session[:csv_file] = target
         
-        redirect_to eval (params[:model] + '_csv_import_map_path')
+        redirect_to eval (params[:resource] + '_csv_import_map_path')
       end
     end
     
@@ -17,14 +17,14 @@ class CsvImportController < ::ApplicationController
       require 'csv'
       reader = CSV.open(session[:csv_file], 'r') 
       @heading = reader.shift  
-      @model = eval(params[:model].classify).new
+      @model = eval(params[:model]).new
       @attributes = @model.attribute_names
     end
 
     def import
       reader = CSV.open(session[:csv_file], 'r') 
       reader.each do |row|
-        model = eval(params[:model].classify).new
+        model = eval(params[:model]).new
         params[:attributes].each do |e,i|
           model[e.to_sym] = row[i.to_i]
         end
@@ -33,6 +33,6 @@ class CsvImportController < ::ApplicationController
       flash[:notice] = "Successful import."
       File.delete(session[:csv_file])
       session[:csv_file] = nil
-      redirect_to eval (params[:model] + '_csv_import_upload_path')
+      redirect_to eval (params[:resource] + '_csv_import_upload_path')
     end
 end
