@@ -3,7 +3,6 @@ class CsvImportController < ::ApplicationController
       if request.post?
         uploaded = params[:file]
         target = Rails.root.join('tmp', uploaded.original_filename)
-        logger.debug target
         File.open(target, 'w') do |file|
           file.write(uploaded.read)            
         end
